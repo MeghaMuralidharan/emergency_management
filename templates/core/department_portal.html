@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block crumb %}DEPARTMENT{% endblock %}{% block page_title %}{{ dept.name }} dashboard{% endblock %}
+{% block content %}<div class="welcome-row"><div><span class="eyebrow">DEPARTMENT PORTAL</span><h1>{{ dept.name }} <span class="wave">✦</span></h1><p class="muted">{{ dept.description|default:"Your department's team and patients." }}</p></div><a class="btn btn-primary" href="{% url 'patients' %}">♡ Department patients</a></div>
+{% include "core/_dept_body.html" %}
+{% endblock %}

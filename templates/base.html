@@ -1,0 +1,49 @@
+{% load static %}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}MediCore | Emergency Operations{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/app.css' %}?v={{ asset_version }}"></head><body>
+{% if user.is_authenticated %}
+<div class="app-shell{% if preview %} collapsed{% endif %}"{% if preview %} data-preview="1"{% endif %}>
+<aside class="sidebar"><a class="brand" href="{% url 'dashboard' %}"><span class="brand-mark">✚</span><span>Medi<span class="brand-light">Core</span><small>EMERGENCY OPERATIONS</small></span></a>
+<div class="side-label">WORKSPACE</div>
+<nav>
+{% if user.is_staff %}
+<a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" title="Overview"><span>▦</span> Overview</a>
+<a href="{% url 'staff' %}" class="{% if request.resolver_match.url_name == 'staff' or request.resolver_match.url_name == 'team_preview' %}active{% endif %}" title="Staff directory"><span>♙</span> Staff directory</a>
+<a href="{% url 'hospital' %}" class="{% if request.resolver_match.url_name == 'hospital' %}active{% endif %}" title="Hospital directory"><span>⌂</span> Hospital directory</a>
+<a href="{% url 'patients' %}" class="{% if 'patient' in request.resolver_match.url_name %}active{% endif %}" title="Patient directory"><span>♡</span> Patient directory</a>
+<a href="{% url 'beds' %}" class="{% if 'bed' in request.resolver_match.url_name or 'ward' in request.resolver_match.url_name %}active{% endif %}" title="Beds &amp; wards"><span>▤</span> Beds & wards</a>
+<a href="{% url 'ambulances' %}" title="Ambulances"><span>🚑</span> Ambulances</a>
+<a href="{% url 'reports' %}" title="Reports"><span>◷</span> Reports</a>
+<a href="{% url 'supply_requests' %}" class="{% if request.resolver_match.url_name == 'supply_requests' %}active{% endif %}" title="Requests"><span>✉</span> Requests{% if badge_new %}<em class="nav-badge">{{ badge_new }}</em>{% endif %}</a>
+
+{% elif user.department_account %}
+<a href="{% url 'department_home' %}" class="{% if request.resolver_match.url_name == 'department_home' %}active{% endif %}" title="Dashboard"><span>▦</span> Dashboard{% if badge_new %}<em class="nav-badge">{{ badge_new }}</em>{% endif %}</a>
+{% if not user.department_account.is_service %}<a href="{% url 'patients' %}" class="{% if 'patient' in request.resolver_match.url_name %}active{% endif %}" title="Patients"><span>♡</span> Patients</a>
+{% endif %}<a href="{% url 'supply_requests' %}" class="{% if request.resolver_match.url_name == 'supply_requests' or request.resolver_match.url_name == 'supply_request_new' %}active{% endif %}" title="Requests"><span>✉</span> Requests</a>
+{% elif user.staffprofile.role == "Doctor" %}
+<a href="{% url 'doctor_dashboard' %}" class="{% if request.resolver_match.url_name == 'doctor_dashboard' %}active{% endif %}" title="Dashboard"><span>▦</span> Dashboard</a>
+<a href="{% url 'patients' %}" class="{% if 'patient' in request.resolver_match.url_name %}active{% endif %}" title="Patients"><span>♡</span> Patients</a>
+{% elif user.staffprofile.role == "Pharmacist" %}
+<a href="{% url 'pharmacist_dashboard' %}" class="{% if request.resolver_match.url_name == 'pharmacist_dashboard' %}active{% endif %}" title="Dashboard"><span>▦</span> Dashboard{% if badge_new %}<em class="nav-badge">{{ badge_new }}</em>{% endif %}</a>
+<a href="{% url 'patients' %}" class="{% if 'patient' in request.resolver_match.url_name %}active{% endif %}" title="Patients"><span>♡</span> Patients</a>
+<a href="{% url 'pharmacy_medicines' %}" class="{% if 'pharmacy_medicine' in request.resolver_match.url_name %}active{% endif %}" title="Medicines"><span>✚</span> Medicines</a>
+<a href="{% url 'supply_requests' %}" class="{% if request.resolver_match.url_name == 'supply_requests' or request.resolver_match.url_name == 'supply_request_new' %}active{% endif %}" title="Request medicine"><span>✉</span> Request medicine</a>
+{% elif user.staffprofile.role == "Lab Technician" %}
+<a href="{% url 'lab_dashboard' %}" class="{% if request.resolver_match.url_name == 'lab_dashboard' %}active{% endif %}" title="Dashboard"><span>▦</span> Dashboard{% if badge_new %}<em class="nav-badge">{{ badge_new }}</em>{% endif %}</a>
+<a href="{% url 'patients' %}" class="{% if 'patient' in request.resolver_match.url_name %}active{% endif %}" title="Patients"><span>♡</span> Patients</a>
+<a href="{% url 'lab_equipment' %}" class="{% if 'lab_equipment' in request.resolver_match.url_name or request.resolver_match.url_name == 'supply_requests' or request.resolver_match.url_name == 'supply_request_new' %}active{% endif %}" title="Equipment"><span>⚙</span> Equipment</a>
+<a href="{% url 'lab_tests' %}" class="{% if 'lab_test' in request.resolver_match.url_name %}active{% endif %}" title="Tests"><span>⚗</span> Tests</a>
+{% else %}
+<a href="{% url 'staff_dashboard' %}" class="active" title="My dashboard"><span>▦</span> My dashboard</a>
+{% endif %}
+</nav><div class="sidebar-bottom"><button type="button" class="side-toggle" aria-expanded="true" title="Shrink menu"><span class="tg-icon">‹</span><span class="tg-label">Shrink menu</span></button><div class="secure-note"><span class="pulse"></span><div><b>System operational</b><small>All services responding</small></div></div><div class="user-mini"><div class="avatar">{{ user.username|first|upper }}</div><div><b>{{ user.get_full_name|default:user.username }}</b><small>{% if user.is_staff %}Admin{% elif user.department_account %}Department{% elif user.staffprofile.role == "Doctor" %}Doctor{% else %}{{ user.staffprofile.role }}{% endif %}</small></div><form method="post" action="{% url 'logout' %}" class="logout-form">{% csrf_token %}<button type="submit" title="Sign out">↗</button></form></div></div></aside>
+<main class="main-area"><header class="topbar"><div><div class="breadcrumb">HOSPITAL / <b>{% block crumb %}OVERVIEW{% endblock %}</b></div><div class="top-title">{% block page_title %}Emergency overview{% endblock %}</div></div><div class="top-actions"><span class="live-pill"><i></i> LIVE SYSTEM</span><span class="date-chip">{% now "D, d M Y" %}</span><div class="avatar avatar-small">{{ user.username|first|upper }}</div></div></header>
+{% if messages %}<div class="messages">{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+<section class="page-content">{% block content %}{% endblock %}</section>
+<footer class="footer">MediCore Emergency Management <span>·</span> Operational prototype <span>·</span> Patient care comes first</footer>
+</main></div>
+{% else %}{% block auth_content %}{% endblock %}{% endif %}
+<script src="{% static 'js/app.js' %}?v={{ asset_version }}"></script></body></html>

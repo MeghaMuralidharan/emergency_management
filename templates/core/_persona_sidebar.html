@@ -1,0 +1,7 @@
+<aside class="sidebar persona-sidebar"><div class="brand"><span class="brand-mark">✚</span><span>Medi<span class="brand-light">Core</span><small>EMERGENCY OPERATIONS</small></span></div>
+<div class="side-label">WORKSPACE</div>
+{% if person.role == "Pharmacist" %}<nav><a href="#" class="active" onclick="return false"><span>▦</span> Dashboard</a><a href="#" onclick="return false"><span>♡</span> Patients</a><a href="#" onclick="return false"><span>✚</span> Medicines</a><a href="#" onclick="return false"><span>✉</span> Request medicine</a></nav>
+{% elif person.role == "Lab Technician" %}<nav><a href="#" class="active" onclick="return false"><span>▦</span> Dashboard</a><a href="#" onclick="return false"><span>♡</span> Patients</a><a href="#" onclick="return false"><span>⚙</span> Equipment</a><a href="#" onclick="return false"><span>⚗</span> Tests</a></nav>
+{% elif person.role == "Doctor" %}<nav><a href="#" class="active" onclick="return false"><span>▦</span> Dashboard</a><a href="#" onclick="return false"><span>♡</span> Patients</a></nav>
+{% else %}<nav><a href="#" class="active" onclick="return false"><span>▦</span> My dashboard</a></nav>{% endif %}
+<div class="sidebar-bottom"><div class="user-mini"><div class="avatar">{{ person.full_name|first|upper }}</div><div><b>{{ person.full_name }}</b><small>{{ person.role }}</small></div><button type="button" class="persona-logout" disabled title="Sign out (preview)">↗</button></div></div></aside>

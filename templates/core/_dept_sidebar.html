@@ -1,0 +1,4 @@
+<aside class="sidebar persona-sidebar"><div class="brand"><span class="brand-mark">✚</span><span>Medi<span class="brand-light">Core</span><small>EMERGENCY OPERATIONS</small></span></div>
+<div class="side-label">{% if dept.is_service %}SERVICE UNIT{% else %}DEPARTMENT{% endif %}</div>
+<nav><a href="#" class="active" onclick="return false"><span>▦</span> Dashboard</a></nav>
+<div class="sidebar-bottom"><div class="user-mini"><div class="avatar">{{ dept.name|first|upper }}</div><div><b>{{ dept.name }}</b><small>{% if dept.is_service %}Service unit{% else %}Department{% endif %}</small></div></div></div></aside>
